@@ -1,0 +1,87 @@
+<title>Microbial Fuel Cell - Simulation</title>
+<h1>Microbial Fuel Cell - Simulation</h1>
+
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;500&display=swap');
+
+    h1, h2, p {
+        font-family: 'Orbitron', sans-serif;
+        font-weight: 500;
+        color: #00695c;
+        text-align: center;
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+    }
+
+    .input-group {
+            display: flex;
+            justify-content: center;
+            gap: 50px;
+            margin-top: 30px;
+        }
+
+    input {
+        padding: 10px;
+    }
+</style>
+
+<div style="width: 500px; margin:auto">
+    <h2 id="power" style="position: relative; left: 92px; top: 141px;"></h2>
+    <h2 id="total" style="position: relative; left: 350px; top: 90px;"></h2>
+
+    <img src="assets/diagram.png" width="700px">
+
+    <div class="input-group">
+    <div style="margin-right: 50px;">
+        <p>Waste water (L)</p>
+        <input placeholder="10.00", id="water">
+    </div>
+    <div>
+        <p>Acetic Acid (%)</p>
+        <input placeholder="0.22", id="concentration">
+    </div>
+    </div>
+</div>
+<br>
+<center>
+    <div style="padding-left: 10%; padding-right: 10%;">
+        <p style="color: #00695c;">Assumptions (theoretical constants) - 50% efficency, 0.5 volts</p>
+        <p style="all: unset;">Limitations - The simulation assumes that the substrate contains purely water and acetic acid in a complete homogenous solution. As a result, any inefficencies and impurities in real-life MFC's are not accounted for.</p>
+    </div>
+</center>
+<script>
+    var total = 0;
+    var efficiency = 0.5;  
+    const voltage = 0.5;
+
+    var concentrationElement = document.getElementById("concentration");
+    var litresElement = document.getElementById("water");
+
+    concentrationElement.value = 0.22;
+    litresElement.value = 100
+
+    setInterval(async () => {
+        var concentration = parseFloat(concentrationElement.value) || 0;
+        var litres = parseFloat(litresElement.value) || 0;
+
+        concentration = concentration / 100;
+
+        var gramsAcetic = litres * 1000 * concentration;  
+        var molesAcetic = gramsAcetic / 60.05;  
+
+        var molElectrons = molesAcetic * 8;
+
+        var particlesElectrons = molElectrons * 6.022e23;
+
+        var current = (particlesElectrons * 1.602e-19) / 3600 * efficiency;
+
+        var power = voltage * current;
+
+  
+        document.getElementById("power").innerHTML = power.toFixed(1) + " W";
+    
+        
+        document.getElementById("total").innerHTML = (power / 1000 * 24).toFixed() + " kwh";
+
+    }, 100);
+</script>
